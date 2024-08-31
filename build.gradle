@@ -1,0 +1,91 @@
+plugins {
+    id 'net.neoforged.moddev' version '2.0.18-beta'
+}
+
+group = 'malte0811'
+archivesBaseName = 'DualCodecs'
+version = '0.1'
+
+neoForge {
+    neoFormVersion = "1.21-20240613.152323"
+}
+
+sourceSets {
+    main
+    codegen {
+        compileClasspath += main.compileClasspath + main.output
+        runtimeClasspath += main.runtimeClasspath + main.output
+    }
+    generated {
+        compileClasspath += main.compileClasspath + main.output
+        runtimeClasspath += main.runtimeClasspath + main.output
+    }
+}
+
+dependencies {
+    codegenImplementation 'com.squareup:javapoet:1.13.0'
+}
+
+jar {
+    from sourceSets.generated.output
+    from sourceSets.main.output
+}
+
+tasks.register('sourcesJar', Jar) {
+    dependsOn classes
+    from sourceSets.generated.allSource
+    from sourceSets.main.allSource
+    archiveClassifier = 'sources'
+}
+
+artifacts {
+    archives jar
+    archives sourcesJar
+}
+
+tasks.register('generateCode', JavaExec) {
+    mainClass = 'malte0811.dualcodecs.GeneratorMain'
+    classpath = sourceSets.codegen.runtimeClasspath
+}
+
+apply plugin: 'maven-publish'
+
+publishing {
+    repositories {
+        maven {
+            url = "file://" + (System.getenv("local_maven") != null ? System.getenv("local_maven") : System.getenv("bamboo_local_maven"))
+        }
+    }
+    publications {
+        maven(MavenPublication) {
+            groupId = project.group
+            version = project.version
+            artifactId = project.archivesBaseName
+
+            artifact jar
+            artifact sourcesJar
+
+            pom {
+                name = project.archivesBaseName
+                description = project.archivesBaseName
+                url = ''
+                scm {
+                    url = 'https://github.com/malte0811/DualCodecs'
+                    connection = 'scm:git:git@github.com/malte0811/DualCodecs.git'
+                    developerConnection = 'scm:git:git@github.com/malte0811/DualCodecs.git'
+                }
+                issueManagement {
+                    system = 'github'
+                    url = 'https://github.com/malte0811/DualCodecs/issues'
+                }
+
+                developers {
+                    developer {
+                        id = 'malte0811'
+                        name = 'malte0811'
+                    }
+                }
+            }
+        }
+    }
+}
