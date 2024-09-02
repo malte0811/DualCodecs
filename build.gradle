@@ -29,6 +29,9 @@ dependencies {
 jar {
     from sourceSets.generated.output
     from sourceSets.main.output
+    manifest {
+        attributes "FMLModType": "GAMELIBRARY"
+    }
 }
 
 tasks.register('sourcesJar', Jar) {
