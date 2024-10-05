@@ -27,3 +27,22 @@ public class AlloyRecipeSerializer implements RecipeSerializer<AlloyRecipe>
 
 In cases where the codecs differ significantly, and for objects where the codecs are provided by an external API, a
 `DualCodec` can be constructed from the "standalone" codecs.
+
+#### Maven
+
+This library is distributed on the BlameJared maven:
+```groovy
+maven {
+    name 'Jared maven'
+    url 'https://maven.blamejared.com/'
+}
+```
+It is recommended to use Jar-In-Jar to include the library in your mods:
+```groovy
+jarJar(implementation('malte0811:DualCodecs')) {
+    version {
+        strictly '[0.1.1,1)'
+        prefer '0.1.1'
+    }
+}
+```
