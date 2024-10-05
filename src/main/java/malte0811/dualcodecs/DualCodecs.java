@@ -63,23 +63,7 @@ public class DualCodecs
      */
 	public static <T, S extends ByteBuf> DualCodec<S, T> unit(T value)
 	{
-        // The main DFU unit codec breaks when presented with a non-map input. This can be a problem when parsing legacy
-        // data where this "unit" is presented by e.g. "true".
-        var safeUnitCodec = new Codec<T>()
-        {
-            @Override
-            public <T1> DataResult<Pair<T, T1>> decode(DynamicOps<T1> ops, T1 input)
-            {
-                return DataResult.success(Pair.of(value, input));
-            }
-
-            @Override
-            public <T1> DataResult<T1> encode(T input, DynamicOps<T1> ops, T1 prefix)
-            {
-                return DataResult.success(prefix);
-            }
-        };
-		return new DualCodec<>(safeUnitCodec, StreamCodec.unit(value));
+		return new DualCodec<>(new CustomUnitCodec<>(value), StreamCodec.unit(value));
 	}
 
 	public static <T>

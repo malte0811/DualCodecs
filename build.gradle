@@ -4,10 +4,11 @@ plugins {
 
 group = 'malte0811'
 archivesBaseName = 'DualCodecs'
-version = '0.1'
+version = '0.1.1'
 
 neoForge {
     neoFormVersion = "1.21-20240613.152323"
+    addModdingDependenciesTo sourceSets.test
 }
 
 sourceSets {
@@ -24,6 +25,12 @@ sourceSets {
 
 dependencies {
     codegenImplementation 'com.squareup:javapoet:1.13.0'
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.2")
+}
+
+test {
+  useJUnitPlatform()
 }
 
 jar {
