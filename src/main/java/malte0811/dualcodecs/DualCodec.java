@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NbtOps;
@@ -54,13 +55,31 @@ public record DualCodec<S extends ByteBuf, T>(Codec<T> codec, StreamCodec<S, T> 
      */
 	public <V> DualCodec<S, V> dispatch(
             Function<V, T> getKey, Function<T, DualMapCodec<? super S, ? extends V>> getCodec
-    )
-	{
-		return new DualCodec<>(
-				codec.dispatch(getKey, k -> getCodec.apply(k).mapCodec()),
-				streamCodec.dispatch(getKey, k -> getCodec.apply(k).streamCodec())
-		);
-	}
+    ) {
+        Codec<V> dispatchedCodec = codec.partialDispatch(
+                "type",
+                v -> {
+                    var key = getKey.apply(v);
+                    if (key != null) {
+                        return DataResult.success(key);
+                    } else {
+                        return DataResult.error(() -> "No type available for " + v);
+                    }
+                },
+                key -> {
+                    var codec = getCodec.apply(key);
+                    if (codec != null) {
+                        return DataResult.success(codec.mapCodec());
+                    } else {
+                        return DataResult.error(() -> "No codec available for " + key);
+                    }
+                }
+        );
+        return new DualCodec<>(
+                dispatchedCodec,
+                streamCodec.dispatch(getKey, k -> getCodec.apply(k).streamCodec())
+        );
+    }
 
     /**
      * @return Codecs for a set of {@link T}s, using this codec for the individual elements
