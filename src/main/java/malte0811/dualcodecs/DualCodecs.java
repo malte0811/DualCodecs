@@ -14,7 +14,7 @@ import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -35,8 +35,8 @@ public class DualCodecs
 	public static final DualCodec<ByteBuf, Long> LONG = new DualCodec<>(Codec.LONG, ByteBufCodecs.VAR_LONG);
     public static final DualCodec<ByteBuf, Direction> DIRECTION = new DualCodec<>(Direction.CODEC, Direction.STREAM_CODEC);
 	public static final DualCodec<ByteBuf, BlockPos> BLOCK_POS = new DualCodec<>(BlockPos.CODEC, BlockPos.STREAM_CODEC);
-	public static final DualCodec<ByteBuf, ResourceLocation> RESOURCE_LOCATION = new DualCodec<>(
-			ResourceLocation.CODEC, ResourceLocation.STREAM_CODEC
+	public static final DualCodec<ByteBuf, Identifier> IDENTIFIER = new DualCodec<>(
+			Identifier.CODEC, Identifier.STREAM_CODEC
 	);
 	public static final DualCodec<RegistryFriendlyByteBuf, Component> CHAT_COMPONENT = new DualCodec<>(
 			ComponentSerialization.CODEC, ComponentSerialization.STREAM_CODEC

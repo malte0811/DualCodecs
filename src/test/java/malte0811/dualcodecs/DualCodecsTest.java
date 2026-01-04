@@ -13,7 +13,7 @@ class CustomUnitCodecTest {
     public void testUnit() {
         // All other codecs are built directly on the DFU equivalent codec. Ensure that this custom-implemented one
         // works correctly as well.
-        var dfuCodec = Codec.unit(Unit.INSTANCE);
+        var dfuCodec = Codec.EMPTY.codec();
         var dfuNbt = dfuCodec.encodeStart(NbtOps.INSTANCE, Unit.INSTANCE);
         var myCodec = new CustomUnitCodec<>(Unit.INSTANCE);
         var myNbt = myCodec.encodeStart(NbtOps.INSTANCE, Unit.INSTANCE);

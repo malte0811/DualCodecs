@@ -1,13 +1,15 @@
 plugins {
-    id 'net.neoforged.moddev' version '2.0.18-beta'
+    id 'net.neoforged.moddev' version "$mdg_version"
 }
 
 group = 'malte0811'
-archivesBaseName = 'DualCodecs'
-version = '0.1.2'
+version = "$dualcodecs_version"
+base {
+    archivesName = 'DualCodecs'
+}
 
 neoForge {
-    neoFormVersion = "1.21-20240613.152323"
+    neoFormVersion = "$neoform_version"
     addModdingDependenciesTo sourceSets.test
 }
 
@@ -25,8 +27,9 @@ sourceSets {
 
 dependencies {
     codegenImplementation 'com.squareup:javapoet:1.13.0'
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.2")
+    testImplementation(platform group: 'org.junit', name: 'junit-bom', version: '6.0.1')
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter'
+    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher'
 }
 
 test {
@@ -70,14 +73,14 @@ publishing {
         maven(MavenPublication) {
             groupId = project.group
             version = project.version
-            artifactId = project.archivesBaseName
+            artifactId = project.base.archivesName
 
             artifact jar
             artifact sourcesJar
 
             pom {
-                name = project.archivesBaseName
-                description = project.archivesBaseName
+                name = project.base.archivesName
+                description = project.base.archivesName
                 url = ''
                 scm {
                     url = 'https://github.com/malte0811/DualCodecs'
